@@ -1,0 +1,30 @@
+---
+- name: netstat
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  remote_user: busra
+  tasks:
+  - name: netstat installation on RedHat
+    yum:
+      name: net-tools
+      state: latest      
+    when: ansible_os_family=='RedHat'
+
+  tasks:
+  - name: netstat installation on RedHat
+    apt:
+      name: net-tools
+      state: latest
+    when: ansible_os_family=='Debian'
+  tasks:
+  - name: chechk netstat version
+    shell: "netstat --version"
+    args:
+      executable: "/bin/bash"
+    register: nv
+
+  - name: output
+    debug:
+      msg: "{{ nv.stdout_lines }}"

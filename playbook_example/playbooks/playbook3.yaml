@@ -1,0 +1,30 @@
+---
+- name: tcpdump
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  remote_user: busra
+  tasks:
+  - name: tcpdump installation on RedHat
+    yum: 
+      name: tcpdump
+      state: latest      
+    when: ansible_os_family=='RedHat'
+
+  tasks:
+  - name: tcpdump installation on Debian
+    apt:
+      name: tcpdump
+      state: latest
+    when: ansible_os_family=='Debian'
+  tasks:
+  - name: tcpdump shell
+    shell: "tcpdump -D"
+    args:
+      executable: "/bin/bash"
+    register: tdump
+
+  - name: output
+    debug:
+      msg: "{{ tdump.stdout_lines }}"

@@ -1,0 +1,40 @@
+---
+- name: my playbook1
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  remote_user: busra
+ 
+  tasks:
+  - name: rootfs disk durumuna bak
+    shell: "df -h /"
+    args:
+      executable: "/bin/bash"
+    register: disk
+
+  - name: output rootfs disk durumu
+    debug:
+      msg: "{{ disk.stdout_lines }}"
+  
+- name: my playbook1
+  hosts: all
+  become: true
+  become_method: sudo
+  become_user: root
+  remote_user: busra
+  tasks:
+  - name: rsyslog serverı kurma Redhat
+    yum:
+      name: rsyslog
+      state: latest      
+    when: ansible_os_family=='RedHat'
+   
+  - name: rsyslog serverı kurma Debian
+    apt:
+      name: rsyslog
+      state: latest  
+    when: ansible_os_family=='Debian'
+
+  - name: rsyslog service restart
+    service: "name=rsyslog state=restarted"
